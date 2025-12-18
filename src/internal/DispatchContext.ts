@@ -8,7 +8,7 @@ export interface DispatchContext_t {
 export const enum FLAGS {
     NONE             = 0x00,
     STOP_PROPAGATION = 0x01,
-    ADVANCE_TARGET   = 0x02,
+    STOP_LISTENERS   = 0x02,
     PREVENT_DEFAULT  = 0x04,
     INTERNAL         = 0x08
 }

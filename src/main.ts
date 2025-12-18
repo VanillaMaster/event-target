@@ -1,31 +1,32 @@
-import { EventTarget } from "#internal/EventTarget.js";
+import { EventTarget, setParent } from "#internal/EventTarget.js";
 import { LISTENER_ADDED, LISTENER_REMOVED } from "#internal/channels.js"; 
 import { AbortController } from "#internal/AbortController.js";
 import { bitset as bitset0 } from "#internal/WeakKey.js";
 import { bitset as bitset1 } from "#internal/DispatchContext.js";
+import { Event } from "#internal/Event.js";
 
 debugger;
 
-const target = new EventTarget();
-const controller = new AbortController();
+const child = new EventTarget();
+const parent = new EventTarget();
+setParent(child, parent);
 
-debugger;
-
-target.addEventListener(LISTENER_REMOVED, function(event) {
-    console.log(event);
+parent.addEventListener("foo", function(e) {
+    console.log(e);
     debugger;
 });
 
-target.addEventListener(LISTENER_ADDED, function(event) {
-    console.log(event);
+child.addEventListener("foo", function(e) {
+    console.log(e);
+    e.stopPropagation();
     debugger;
-}, { signal: controller.signal });
+})
 
 debugger;
 
-controller.abort();
+child.dispatchEvent(new Event("foo", { bubbles: true }));
 
-debugger;
+debugger
 
 console.log(bitset0, bitset1);
 

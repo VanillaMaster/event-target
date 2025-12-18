@@ -14,8 +14,11 @@ interface ErrorConstructor {
     new(message?: string): Error
 }
 
+/**
+ * @__NO_SIDE_EFFECTS__
+ */
 export function assert(ok: boolean, message?: string, Error: ErrorConstructor = AssertionError): asserts ok {
-    if (!ok) { debugger; throw new Error(message); }
+    if (!ok) throw new Error(message);
 }
 
 /**

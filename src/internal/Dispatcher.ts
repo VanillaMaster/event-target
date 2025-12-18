@@ -34,32 +34,50 @@ function advance() {
             context.flags |= DispatchContext.FLAGS.INTERNAL;
             event[kContext] = context;
         }
-        getPath(target, path);
+
+        if (event.bubbles) getPath(target, path);
+        else path.push(target);
     }
+}
+
+function checkStopListeners(context: DispatchContext_t) {
+    const result = (context.flags & DispatchContext.FLAGS.STOP_LISTENERS) !== 0;
+    if (result) listeners.length = 0;
+    return result;
+}
+
+function cehckStopPropagation(context: DispatchContext_t) {
+    const result = (context.flags & DispatchContext.FLAGS.STOP_PROPAGATION) !== 0;
+    if (result) path.length = 0;
+    return result;
 }
 
 export function drain() {
     if (event === null) advance();
     while (event !== null) {
-        if (listeners.length === 0) if (path.length === 0) {
-            const context = event[kContext];
-            assert(context !== null);
-            if ((context.flags & DispatchContext.FLAGS.INTERNAL) !== 0) DispatchContext.free(context);
+        const context = event[kContext];
+        assert(context !== null);
+        if (listeners.length === 0 || checkStopListeners(context)) {
+            if (path.length === 0 || cehckStopPropagation(context)) {                
+                if ((context.flags & DispatchContext.FLAGS.INTERNAL) !== 0) DispatchContext.free(context);
+                
+                event[kPhase] = PHASE.NONE;
+                event[kContext] = null;
+                event[kTarget] = null;
+                event[kCurrentTarget] = null;
 
-            event[kPhase] = PHASE.NONE;
-            event[kContext] = null;
-            event[kTarget] = null;
-            event[kCurrentTarget] = null;
+                advance();
+                continue;
+            } else {
+                assert(event !== null);
+                const target = path.pop();
+                assert(target !== undefined);
 
-            advance();
-            continue;
-        } else {
-            assert(event !== null);
-            const target = path.pop();
-            assert(target !== undefined);
-            event[kCurrentTarget] = target;
-            getListeners(target, event.type, listeners);
-            continue;
+                event[kCurrentTarget] = target;
+                
+                getListeners(target, event.type, listeners);
+                continue;
+            }
         }
         assert(event !== null);
         const { [kCurrentTarget]: target } = event;

@@ -20,7 +20,7 @@ function stopPropagation(self: Event) {
 
 function stopImmediatePropagation(self: Event) {
     const context = self[kContext];
-    if (context !== null) context.flags |= (FLAGS.STOP_PROPAGATION | FLAGS.ADVANCE_TARGET);
+    if (context !== null) context.flags |= (FLAGS.STOP_PROPAGATION | FLAGS.STOP_LISTENERS);
 }
 
 function preventDefault(self: Event) {
