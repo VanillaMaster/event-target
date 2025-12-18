@@ -1,14 +1,14 @@
 {
     "compilerOptions": {
         "module": "NodeNext",
-        "target": "ES2024",
+        "target": "es2024",
         "moduleResolution": "NodeNext",
-        // "incremental": true,
 
         "resolvePackageJsonImports": true,
         "resolveJsonModule": true,
         "allowArbitraryExtensions": true,
         
+        "moduleDetection": "force",
         "allowJs": true,
         "checkJs": true,
         "esModuleInterop": true,
@@ -25,16 +25,18 @@
         "declarationMap": true,
         "sourceMap": true,
         
-        "outDir": "dist",
+        "outDir": "./dist",
         "types": [],
         "paths": {
             "#internal/*": ["./src/internal/*"]
-        }
+        },
+        "rootDir": "./src"
     },
     "include": [
-        "src/**/*"
+        "./src/**/*"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "**/node_modules/*"
     ]
 }

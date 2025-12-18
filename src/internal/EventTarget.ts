@@ -1,7 +1,7 @@
 import type { AbortSignal } from "#internal/AbortSignal.js";
 import type { Listener } from "#internal/Listener.js";
+import type { Event } from "#internal/Event.js";
 
-import { Event } from "#internal/Event.js";
 import { assert, assertNotNull, MASK } from "#internal/utils.js";
 import { enqueue, drain } from "#internal/Dispatcher.js";
 import { ListenersChangeEvent } from "#internal/ListenersChangeEvent.js";
@@ -82,7 +82,7 @@ function weakEntryCleanup(node: ListenerNode_t) {
     drain();
 }
 
-function signalCleanup(this: ListenerNode_t, event: Event) {
+function signalCleanup(this: ListenerNode_t, _event: Event) {
     removeListener(this);
     drain();
 }

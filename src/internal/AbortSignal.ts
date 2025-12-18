@@ -5,6 +5,8 @@ import type { Event } from "#internal/Event.js";
 export const kAborted = Symbol("AbortSignal::aborted");
 export const kReason = Symbol("AbortSignal::reason");
 
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+
 export class AbortSignal extends EventTarget {
     constructor(aborted: boolean, reason: unknown) {
         super();
@@ -31,6 +33,8 @@ export interface AbortSignal {
     addEventListener<K extends keyof AbortSignalEventMap>(type: K, listener: Listener<AbortSignalEventMap[K]>, options?: AddEventListenerOptions): boolean;
     addEventListener(type: string | symbol, listener: Listener<Event>, options?: AddEventListenerOptions): boolean;
 
-    removeEventListener<K extends keyof AbortSignalEventMap>(type: K, listener: Listener<AbortSignalEventMap[K]>): boolean
-    removeEventListener(type: string | symbol, listener: Listener<Event>): boolean
+    removeEventListener<K extends keyof AbortSignalEventMap>(type: K, listener: Listener<AbortSignalEventMap[K]>): boolean;
+    removeEventListener(type: string | symbol, listener: Listener<Event>): boolean;
 }
+
+/* eslint-enable */

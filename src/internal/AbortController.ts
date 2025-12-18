@@ -18,7 +18,7 @@ export class AbortController {
         return signal;
     }
 
-    abort(reason?: any) {
+    abort(reason?: unknown) {
         const signal = this[kSignal];
         if (signal !== null && !signal[kAborted]) {
             signal[kAborted] = true;

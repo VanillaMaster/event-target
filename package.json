@@ -1,18 +1,43 @@
 {
-  "private": true,
-  "type": "module",
-  "imports": {
-    "#internal/*": {
-      "default": "./dist/internal/*"
+    "author": {
+        "name": "vanilla",
+        "url": "https://github.com/vanillamaster"
+    },
+    "repository": {
+        "type": "git",
+        "$url": "https://github.com/vanillamaster/event-target"
+    },
+    "name": "@vanilla/event-target",
+    "version": "0.0.1",
+    "private": true,
+    "description": "WHATWG-like EventTarget implementation with extensive capabilities",
+    "type": "module",
+    "scripts": {
+        "build": "tsc -b",
+        "lint": "eslint"
+    },
+    "imports": {
+        "#internal/*": {
+            "default": "./dist/internal/*"
+        }
+    },
+    "types": "./dist/mod.d.ts",
+    "main": "./dist/mod.js",
+    "exports": {
+        ".": {
+            "types": "./dist/mod.d.ts",
+            "default": "./dist/mod.js"
+        }
+    },
+    "license": "ISC",
+    "files": [
+        "dist/**/*.js",
+        "dist/**/*.d.ts"
+    ],
+    "devDependencies": {
+        "@eslint/js": "^9.39.2",
+        "eslint": "^9.39.2",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.50.0"
     }
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/mod.d.ts",
-      "default": "./dist/mod.js"
-    }
-  },
-  "devDependencies": {
-    "typescript": "^5.9.3"
-  }
 }

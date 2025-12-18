@@ -3,10 +3,9 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "tsc: incremental",
-			"command": "npx tsc",
-			"args": ["-b"],
-			"problemMatcher": ["$tsc"],
+			"label": "npm: build",
+			"command": "npm",
+			"args": ["run", "build"],
 			"group": {
 				"isDefault": true,
 				"kind": "build"
