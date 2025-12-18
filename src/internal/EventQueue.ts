@@ -1,8 +1,8 @@
-import type { Event } from "./Event.js";
-import { assert, static_cast } from "./utils.js";
+import type { Event } from "#internal/Event.js";
+import { assert, static_cast } from "#internal/utils.js";
 
-export const kNext = Symbol("next");
-export const kPrev = Symbol("prev");
+export const kNext = Symbol("EventQueueEntry::next");
+export const kPrev = Symbol("EventQueueEntry::prev");
 
 declare namespace internal {
     interface Sentinel<T> {

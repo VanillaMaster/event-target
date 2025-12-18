@@ -1,4 +1,4 @@
-import { Event, type EventOptions } from "./Event.js";
+import { Event, type EventOptions } from "#internal/Event.js";
 
 export interface ErrorEventOptions extends EventOptions {
     error?: unknown;

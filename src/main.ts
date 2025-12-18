@@ -1,13 +1,32 @@
-import { EventTarget } from "./EventTarget.js";
-import { Event } from "./Event.js";
-import { push, shift, sentinel } from "./EventQueue.js";
+import { EventTarget } from "#internal/EventTarget.js";
+import { LISTENER_ADDED, LISTENER_REMOVED } from "#internal/channels.js"; 
+import { AbortController } from "#internal/AbortController.js";
+import { bitset as bitset0 } from "#internal/WeakKey.js";
+import { bitset as bitset1 } from "#internal/DispatchContext.js";
 
-for (let i = 1; i <= 10; i++) {
-    push(new Event(i.toString()));
-}
+debugger;
 
-for (let i = 0; i < 20; i++) {
-    console.log(shift());
-}
+const target = new EventTarget();
+const controller = new AbortController();
 
-debugger
+debugger;
+
+target.addEventListener(LISTENER_REMOVED, function(event) {
+    console.log(event);
+    debugger;
+});
+
+target.addEventListener(LISTENER_ADDED, function(event) {
+    console.log(event);
+    debugger;
+}, { signal: controller.signal });
+
+debugger;
+
+controller.abort();
+
+debugger;
+
+console.log(bitset0, bitset1);
+
+debugger;

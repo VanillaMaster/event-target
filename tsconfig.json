@@ -3,7 +3,7 @@
         "module": "NodeNext",
         "target": "ES2024",
         "moduleResolution": "NodeNext",
-        "incremental": true,
+        // "incremental": true,
 
         "resolvePackageJsonImports": true,
         "resolveJsonModule": true,
@@ -17,7 +17,7 @@
         "noImplicitAny": true,
         "exactOptionalPropertyTypes": true,
         "stripInternal": true,
-        "verbatimModuleSyntax": true,
+        // "verbatimModuleSyntax": true,
 
         "skipLibCheck": true,
 
@@ -27,7 +27,9 @@
         
         "outDir": "dist",
         "types": [],
-        // "paths": {}
+        "paths": {
+            "#internal/*": ["./src/internal/*"]
+        }
     },
     "include": [
         "src/**/*"

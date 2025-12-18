@@ -1,11 +1,11 @@
-import type { EventTarget } from "./EventTarget.js"; 
-import { type Sentinel, kNext, kPrev } from "./EventQueue.js";
-import { type DispatchContext, FLAGS } from "./DispatchContext.js"
+import type { EventTarget } from "#internal/EventTarget.js"; 
+import { type Sentinel, kNext, kPrev } from "#internal/EventQueue.js";
+import { type DispatchContext_t, FLAGS } from "#internal/DispatchContext.js";
 
-export const kTarget = Symbol("target");
-export const kCurrentTarget = Symbol("currentTarget");
-export const kContext = Symbol("context");
-export const kPhase = Symbol("phase");
+export const kTarget = Symbol("Event::target");
+export const kCurrentTarget = Symbol("Event::currentTarget");
+export const kContext = Symbol("Event::context");
+export const kPhase = Symbol("Event::phase");
 
 export const enum PHASE {
     NONE,
@@ -47,7 +47,7 @@ export class Event {
     /**@internal */
     [kPhase]: PHASE = PHASE.NONE;
     /**@internal */
-    [kContext]: DispatchContext | null = null;
+    [kContext]: DispatchContext_t | null = null;
     /**@internal */
     [kTarget]: EventTarget | null = null;
     /**@internal */

@@ -1,12 +1,12 @@
-import { Event, type EventOptions } from "./Event.js";
+import { Event, type EventOptions } from "#internal/Event.js";
 
-export interface ListenerAddedEventOptions extends EventOptions {
+export interface ListenersChangeEventOptions extends EventOptions {
     listenerType: string | symbol;
     newLength: number;
 }
 
-export class ListenerAddedEvent extends Event {
-    constructor(type: string | symbol, options: ListenerAddedEventOptions) {
+export class ListenersChangeEvent extends Event {
+    constructor(type: string | symbol, options: ListenersChangeEventOptions) {
         super(type, options);
 
         this.listenerType = options.listenerType;
