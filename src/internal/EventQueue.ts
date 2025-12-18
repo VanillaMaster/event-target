@@ -46,6 +46,9 @@ export function shift(): Event | null {
     next[kPrev] = sentinel;
     sentinel[kNext] = next;
     
+    node[kNext] = null;
+    node[kPrev] = null;
+
     length--;
 
     return node;

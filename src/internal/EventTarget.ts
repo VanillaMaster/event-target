@@ -1,5 +1,5 @@
 import type { AbortSignal } from "#internal/AbortSignal.js";
-import type { Listener_t } from "#internal/Listener.js";
+import type { Listener } from "#internal/Listener.js";
 
 import { Event } from "#internal/Event.js";
 import { assert, assertNotNull, MASK } from "#internal/utils.js";
@@ -46,7 +46,7 @@ function acquireWeakKey(internals: EventTargetInternals_t): WeakKey_t {
     return key;
 }
 
-function registerWeakNode(target: EventTarget, internals: EventTargetInternals_t, listener: Listener_t<Event>, key: WeakKey_t | null, node: ListenerNode_t) {
+function registerWeakNode(target: EventTarget, internals: EventTargetInternals_t, listener: Listener<Event>, key: WeakKey_t | null, node: ListenerNode_t) {
     assert(key !== null);
     if ((internals.flags & EventTargetInternals.FLAGS.TRACKED) === 0) trackInstance(target, internals);
 
@@ -139,7 +139,7 @@ function getSentinel(internals: EventTargetInternals_t, listeners: Map<string | 
     return sentinel;
 }
 
-function addListener(target: EventTarget, type: string | symbol, listener: Listener_t<Event>, options: AddEventListenerOptions): ListenerNode_t | null {    
+function addListener(target: EventTarget, type: string | symbol, listener: Listener<Event>, options: AddEventListenerOptions): ListenerNode_t | null {    
     const { [kInternals]: internals } = target;
     const { listeners } = internals;
 
@@ -155,7 +155,7 @@ function addListener(target: EventTarget, type: string | symbol, listener: Liste
     if (typeof listener === "function") flags |= ListenerNode.FLAGS.FUNCTION;
     const { once = false, weak = false, signal = null } = options;
     
-    let listenerRef: Listener_t<Event> | WeakRef<Listener_t<Event>> = listener;
+    let listenerRef: Listener<Event> | WeakRef<Listener<Event>> = listener;
     let key: WeakKey_t | null = null;
 
     if (weak) {
@@ -183,7 +183,7 @@ function addListener(target: EventTarget, type: string | symbol, listener: Liste
     return node;
 }
 
-function removeEventListener(target: EventTarget, type: string | symbol, listener: Listener_t<Event>): boolean {
+function removeEventListener(target: EventTarget, type: string | symbol, listener: Listener<Event>): boolean {
     const { [kInternals]: internals } = target;
     const { listeners } = internals;
 
@@ -202,10 +202,10 @@ function removeEventListener(target: EventTarget, type: string | symbol, listene
 }
 
 export class EventTarget {
-    /**@internal */
+
     readonly [kInternals] = EventTargetInternals.create(this);
 
-    addEventListener(type: string | symbol, listener: Listener_t<Event>, options: AddEventListenerOptions = OPT_EMPTY): boolean {
+    addEventListener(type: string | symbol, listener: Listener<Event>, options: AddEventListenerOptions = OPT_EMPTY): boolean {
         drain();
         const node = addListener(this, type, listener, options);
         drain();
@@ -221,7 +221,7 @@ export class EventTarget {
         return ((flags & DispatchContext.FLAGS.PREVENT_DEFAULT) === 0);
     }
 
-    removeEventListener(type: string | symbol, listener: Listener_t<Event>): boolean {
+    removeEventListener(type: string | symbol, listener: Listener<Event>): boolean {
         const result = removeEventListener(this, type, listener);
         drain();
         return result;

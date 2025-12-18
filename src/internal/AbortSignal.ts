@@ -1,4 +1,4 @@
-import type { Listener_t } from "#internal/Listener.js";
+import type { Listener } from "#internal/Listener.js";
 import { EventTarget, type AddEventListenerOptions } from "#internal/EventTarget.js"
 import type { Event } from "#internal/Event.js";
 
@@ -28,9 +28,9 @@ export interface AbortSignalEventMap {
 }
 
 export interface AbortSignal {
-    addEventListener<K extends keyof AbortSignalEventMap>(type: K, listener: Listener_t<AbortSignalEventMap[K]>, options?: AddEventListenerOptions): boolean;
-    addEventListener(type: string | symbol, listener: Listener_t<Event>, options?: AddEventListenerOptions): boolean;
+    addEventListener<K extends keyof AbortSignalEventMap>(type: K, listener: Listener<AbortSignalEventMap[K]>, options?: AddEventListenerOptions): boolean;
+    addEventListener(type: string | symbol, listener: Listener<Event>, options?: AddEventListenerOptions): boolean;
 
-    removeEventListener<K extends keyof AbortSignalEventMap>(type: K, listener: Listener_t<AbortSignalEventMap[K]>): boolean
-    removeEventListener(type: string | symbol, listener: Listener_t<Event>): boolean
+    removeEventListener<K extends keyof AbortSignalEventMap>(type: K, listener: Listener<AbortSignalEventMap[K]>): boolean
+    removeEventListener(type: string | symbol, listener: Listener<Event>): boolean
 }

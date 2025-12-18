@@ -1,6 +1,6 @@
 import type { Event } from "#internal/Event.js"; 
 import type { ListenerSentinel_t } from "#internal/ListenerSentinel.js"
-import type { Listener_t, FunctionListener_t } from "#internal/Listener.js";
+import type { Listener, FunctionListener } from "#internal/Listener.js";
 import type { WeakKey_t } from "#internal/WeakKey.js"; 
 
 export const enum FLAGS {
@@ -10,7 +10,7 @@ export const enum FLAGS {
 }
 
 interface ListenerNodeBase_t {
-    listener: Listener_t<Event> | WeakRef<Listener_t<Event>>;
+    listener: Listener<Event> | WeakRef<Listener<Event>>;
     sentinel: ListenerSentinel_t;
     
     flags: number;
@@ -21,16 +21,16 @@ interface ListenerNodeBase_t {
     next: ListenerNode_t | null;
     prev: ListenerNode_t | ListenerSentinel_t;
 
-    handleEvent: FunctionListener_t<Event>;
+    handleEvent: FunctionListener<Event>;
 }
 
 interface StrongListenerNode_t extends ListenerNodeBase_t {
-    listener: Listener_t<Event>;
+    listener: Listener<Event>;
     weakKey: null;
 }
 
 interface WeakListenerNode_t extends ListenerNodeBase_t {
-    listener: WeakRef<Listener_t<Event>>;
+    listener: WeakRef<Listener<Event>>;
     weakKey: WeakKey_t;
 }
 
@@ -39,7 +39,7 @@ export type ListenerNode_t =
     | WeakListenerNode_t;
     
 export function create(
-    listener: Listener_t<Event>,
+    listener: Listener<Event>,
     sentinel: ListenerSentinel_t,
     flags: number,
     signal: WeakRef<ListenerNode_t> | null,
@@ -47,10 +47,10 @@ export function create(
     once: boolean,
     next: ListenerNode_t | null,
     prev: ListenerNode_t | ListenerSentinel_t,
-    handleEvent: FunctionListener_t<Event>
+    handleEvent: FunctionListener<Event>
 ): StrongListenerNode_t;
 export function create(
-    listener: WeakRef<Listener_t<Event>>,
+    listener: WeakRef<Listener<Event>>,
     sentinel: ListenerSentinel_t,
     flags: number,
     signal: WeakRef<ListenerNode_t> | null,
@@ -58,10 +58,10 @@ export function create(
     once: boolean,
     next: ListenerNode_t | null,
     prev: ListenerNode_t | ListenerSentinel_t,
-    handleEvent: FunctionListener_t<Event>
+    handleEvent: FunctionListener<Event>
 ): WeakListenerNode_t;
 export function create(
-    listener: Listener_t<Event> | WeakRef<Listener_t<Event>>,
+    listener: Listener<Event> | WeakRef<Listener<Event>>,
     sentinel: ListenerSentinel_t,
     flags: number,
     signal: WeakRef<ListenerNode_t> | null,
@@ -69,10 +69,10 @@ export function create(
     once: boolean,
     next: ListenerNode_t | null,
     prev: ListenerNode_t | ListenerSentinel_t,
-    handleEvent: FunctionListener_t<Event>
+    handleEvent: FunctionListener<Event>
 ): ListenerNode_t;
 export function create(
-    listener: Listener_t<Event> | WeakRef<Listener_t<Event>>,
+    listener: Listener<Event> | WeakRef<Listener<Event>>,
     sentinel: ListenerSentinel_t,
     flags: number,
     signal: WeakRef<ListenerNode_t> | null,
@@ -80,7 +80,7 @@ export function create(
     once: boolean,
     next: ListenerNode_t | null,
     prev: ListenerNode_t | ListenerSentinel_t,
-    handleEvent: FunctionListener_t<Event>
+    handleEvent: FunctionListener<Event>
 ): ListenerNodeBase_t {
     return { listener, sentinel, flags, signal, weakKey, once, next, prev, handleEvent };
 }

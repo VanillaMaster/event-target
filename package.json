@@ -1,8 +1,15 @@
 {
+  "private": true,
   "type": "module",
   "imports": {
     "#internal/*": {
       "default": "./dist/internal/*"
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/mod.d.ts",
+      "default": "./dist/mod.js"
     }
   },
   "devDependencies": {

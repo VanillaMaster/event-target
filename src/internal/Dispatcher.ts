@@ -1,6 +1,6 @@
 import type { ListenerNode_t } from "#internal/ListenerNode.js";
-import type { FunctionListener_t, ObjectListener_t } from "#internal/Listener.js"
-import { type EventTarget, getPath, getListeners, removeListener, removeListenerWithSignal } from "#internal/EventTarget.js";
+import type { FunctionListener, ObjectListener } from "#internal/Listener.js"
+import { type EventTarget, getPath, getListeners, removeListenerWithSignal } from "#internal/EventTarget.js";
 import { type Event, kCurrentTarget, kContext, kPhase, kTarget, PHASE } from "#internal/Event.js";
 import { assert, static_cast } from "#internal/utils.js";
 import { push, shift } from "#internal/EventQueue.js";
@@ -71,7 +71,7 @@ export function drain() {
             if (node.once) removeListenerWithSignal(node);
 
             if ((node.flags & FLAGS.FUNCTION) !== 0) {
-                static_cast<FunctionListener_t<Event>>(listener);
+                static_cast<FunctionListener<Event>>(listener);
                 try {
                     Reflect.apply(listener, target, [event]);
                 } catch (error) {
@@ -79,7 +79,7 @@ export function drain() {
                     enqueue(target, event, null);
                 }
             } else {
-                static_cast<ObjectListener_t<Event>>(listener);
+                static_cast<ObjectListener<Event>>(listener);
                 try {
                     const { handleEvent } = listener;
                     if (typeof handleEvent === "function") Reflect.apply(handleEvent, listener, [event]);

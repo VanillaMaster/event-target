@@ -44,17 +44,11 @@ export class Event {
 
     readonly type: string | symbol;
     
-    /**@internal */
     [kPhase]: PHASE = PHASE.NONE;
-    /**@internal */
     [kContext]: DispatchContext_t | null = null;
-    /**@internal */
     [kTarget]: EventTarget | null = null;
-    /**@internal */
     [kCurrentTarget]: EventTarget | null = null;
-    /**@internal */
     [kNext]: Sentinel | Event | null = null;
-    /**@internal */
     [kPrev]: Sentinel | Event | null = null;
 
     get phase() {
