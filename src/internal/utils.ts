@@ -1,9 +1,6 @@
 class AssertionError extends Error {
-    constructor(message?: string) {
-        super(message);
-    }
     static {
-        Object.defineProperty(this.prototype, "name", {
+        Object.defineProperty(AssertionError.prototype, "name", {
             value: "AssertionError",
             enumerable: false
         });
@@ -13,7 +10,6 @@ class AssertionError extends Error {
 interface ErrorConstructor {
     new(message?: string): Error
 }
-
 /**
  * @__NO_SIDE_EFFECTS__
  */

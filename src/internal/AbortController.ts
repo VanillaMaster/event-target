@@ -5,8 +5,6 @@ const kSignal = Symbol("AbortController::signal");
 
 export class AbortController {
 
-    constructor() {}
-
     [kSignal]: AbortSignal | null = null;
 
     get signal() {

@@ -3,11 +3,10 @@
     "configurations": [
         {
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Program (deno)",
             "type": "node",
             "program": "${workspaceFolder}/tests/index.js",
             "cwd": "${workspaceFolder}",
-            "env": {},
             "preLaunchTask": "${defaultBuildTask}",
             "runtimeExecutable": "deno",
             "runtimeArgs": [
@@ -16,9 +15,25 @@
                 "--allow-all",
                 "--unstable-raw-imports",
                 "--sloppy-imports",
-                "--conditions=development"
+                "--conditions=development",
+                "--v8-flags=--expose-gc"
             ],
             "attachSimplePort": 9230
+        },
+        {
+            "request": "launch",
+            "name": "Launch Program (node)",
+            "type": "node",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/tests/index.js",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "${defaultBuildTask}",
+            "runtimeExecutable": "node",
+            "runtimeArgs": [
+                "--expose-gc"
+            ]
         }
     ]
 }

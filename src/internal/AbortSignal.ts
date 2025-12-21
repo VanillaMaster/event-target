@@ -1,11 +1,11 @@
-import type { Listener } from "#internal/Listener.js";
-import { EventTarget, type AddEventListenerOptions } from "#internal/EventTarget.js"
 import type { Event } from "#internal/Event.js";
+import { type AddEventListenerOptions, EventTarget } from "#internal/EventTarget.js";
+import type { Listener } from "#internal/Listener.js";
 
 export const kAborted = Symbol("AbortSignal::aborted");
 export const kReason = Symbol("AbortSignal::reason");
 
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+// biome-ignore-start lint: noUnsafeDeclarationMerging
 
 export class AbortSignal extends EventTarget {
     constructor(aborted: boolean, reason: unknown) {
@@ -37,4 +37,4 @@ export interface AbortSignal {
     removeEventListener(type: string | symbol, listener: Listener<Event>): boolean;
 }
 
-/* eslint-enable */
+// biome-ignore-end lint: noUnsafeDeclarationMerging

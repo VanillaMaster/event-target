@@ -1,22 +1,22 @@
 import type { AbortSignal } from "#internal/AbortSignal.js";
-import type { Listener } from "#internal/Listener.js";
 import type { Event } from "#internal/Event.js";
+import type { Listener } from "#internal/Listener.js";
 
-import { assert, assertNotNull, MASK } from "#internal/utils.js";
-import { enqueue, drain } from "#internal/Dispatcher.js";
+import { drain, enqueue } from "#internal/Dispatcher.js";
 import { ListenersChangeEvent } from "#internal/ListenersChangeEvent.js";
 import { LISTENER_ADDED, LISTENER_REMOVED } from "#internal/channels.js";
+import { assert, assertNotNull, MASK } from "#internal/utils.js";
 
-import * as DispatchContext from "#internal/DispatchContext.js"
+import * as DispatchContext from "#internal/DispatchContext.js";
 
-import { type ListenerSentinel_t } from "#internal/ListenerSentinel.js"
-import * as ListenerSentinel from "#internal/ListenerSentinel.js"
+import type { ListenerSentinel_t } from "#internal/ListenerSentinel.js";
+import * as ListenerSentinel from "#internal/ListenerSentinel.js";
 
 import type { WeakKey_t } from "#internal/WeakKey.js";
 import * as WeakKey from "#internal/WeakKey.js";
 
 import type { ListenerNode_t } from "#internal/ListenerNode.js";
-import * as ListenerNode from "#internal/ListenerNode.js"
+import * as ListenerNode from "#internal/ListenerNode.js";
 
 import type { EventTargetInternals_t } from "#internal/EventTargetInternals.js";
 import * as EventTargetInternals from "#internal/EventTargetInternals.js";
@@ -239,6 +239,7 @@ export function clearParent(target: EventTarget) {
 }
 
 export function getPath(target: EventTarget, out: EventTarget[]) {
+    // biome-ignore lint: noConfusingLabels
     block: {
         const { [kInternals]: { parentRef } } = target;
         if (parentRef === null) break block;
