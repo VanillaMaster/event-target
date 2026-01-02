@@ -5,21 +5,17 @@ import type { Listener } from "#internal/Listener.js";
 import { drain, enqueue } from "#internal/Dispatcher.js";
 import { ListenersChangeEvent } from "#internal/ListenersChangeEvent.js";
 import { LISTENER_ADDED, LISTENER_REMOVED } from "#internal/channels.js";
-import { assert, assertNotNull, MASK } from "#internal/utils.js";
+import { assert, assertNotNull } from "#internal/utils.js";
 
-import * as DispatchContext from "#internal/DispatchContext.js";
+import { DispatchContext } from "#internal/DispatchContext.js";
 
-import type { ListenerSentinel_t } from "#internal/ListenerSentinel.js";
-import * as ListenerSentinel from "#internal/ListenerSentinel.js";
+import { ListenerSentinel } from "#internal/ListenerSentinel.js";
 
-import type { WeakKey_t } from "#internal/WeakKey.js";
-import * as WeakKey from "#internal/WeakKey.js";
+import { WeakKey } from "#internal/WeakKey.js";
 
-import type { ListenerNode_t } from "#internal/ListenerNode.js";
-import * as ListenerNode from "#internal/ListenerNode.js";
+import { ListenerNode } from "#internal/ListenerNode.js";
 
-import type { EventTargetInternals_t } from "#internal/EventTargetInternals.js";
-import * as EventTargetInternals from "#internal/EventTargetInternals.js";
+import { EventTargetInternals } from "#internal/EventTargetInternals.js";
 
 export interface AddEventListenerOptions {
     signal?: AbortSignal;
@@ -35,37 +31,40 @@ export const kInternals = Symbol("EventTarget::internals");
 const instances = new FinalizationRegistry(instanceCleanup);
 const entries = new FinalizationRegistry(weakEntryCleanup);
 
-function acquireWeakKey(internals: EventTargetInternals_t): WeakKey_t {
+function acquireWeakKey(internals: EventTargetInternals): WeakKey {
     const key = WeakKey.alloc();
     const { mask } = key;
     if (mask === 0) {
         let keys = internals.slowWeakKeys;
-        if (keys === null) internals.slowWeakKeys = (keys = new Set());
+        if (keys === null) {
+            keys = new Set();
+            internals.slowWeakKeys = keys;
+        }
         keys.add(key);
     } else internals.fastWeakKeys |= mask;
     return key;
 }
 
-function registerWeakNode(target: EventTarget, internals: EventTargetInternals_t, listener: Listener<Event>, key: WeakKey_t | null, node: ListenerNode_t) {
+function registerWeakNode(target: EventTarget, internals: EventTargetInternals, listener: Listener<Event>, key: WeakKey | null, node: ListenerNode.Any) {
     assert(key !== null);
-    if ((internals.flags & EventTargetInternals.FLAGS.TRACKED) === 0) trackInstance(target, internals);
+    if ((internals.flags & EventTargetInternals.TRACKED) === 0) trackInstance(target, internals);
 
     entries.register(listener, node, key);
 }
 
-function trackInstance(target: EventTarget, internals: EventTargetInternals_t) {
-    assert((internals.flags & EventTargetInternals.FLAGS.TRACKED) === 0);
-    internals.flags |= EventTargetInternals.FLAGS.TRACKED;
+function trackInstance(target: EventTarget, internals: EventTargetInternals) {
+    assert((internals.flags & EventTargetInternals.TRACKED) === 0);
+    internals.flags |= EventTargetInternals.TRACKED;
     instances.register(target, internals);
 }
 
-function instanceCleanup(internals: EventTargetInternals_t) {
-    assert((internals.flags & EventTargetInternals.FLAGS.DEAD) === 0);
-    internals.flags |= EventTargetInternals.FLAGS.DEAD;
+function instanceCleanup(internals: EventTargetInternals) {
+    assert((internals.flags & EventTargetInternals.DEAD) === 0);
+    internals.flags |= EventTargetInternals.DEAD;
 
     let bitset = internals.fastWeakKeys;
     for (let i = Math.clz32(bitset); i < 32; i = Math.clz32(bitset)) {
-        const mask = (MASK.BIT_32 >>> i) | 0;
+        const mask = (0x80000000 >>> i) | 0;
         bitset &= ~mask;
         entries.unregister(WeakKey.get(i));
         WeakKey.free(mask);
@@ -77,19 +76,19 @@ function instanceCleanup(internals: EventTargetInternals_t) {
     }
 }
 
-function weakEntryCleanup(node: ListenerNode_t) {
+function weakEntryCleanup(node: ListenerNode.Any) {
     removeListenerWithSignal(node);
     drain();
 }
 
-function signalCleanup(this: ListenerNode_t, _event: Event) {
+function signalCleanup(this: ListenerNode.Any, _event: Event) {
     removeListener(this);
     drain();
 }
 
-export function removeListener(node: ListenerNode_t) {
-    assert((node.flags & ListenerNode.FLAGS.DEAD) === 0);
-    node.flags |= ListenerNode.FLAGS.DEAD;
+export function removeListener(node: ListenerNode.Any) {
+    assert((node.flags & ListenerNode.DEAD) === 0);
+    node.flags |= ListenerNode.DEAD;
 
     const { sentinel, prev, next, weakKey } = node;
     const { internals, event: type } = sentinel;
@@ -121,7 +120,7 @@ export function removeListener(node: ListenerNode_t) {
     }
 }
 
-export function removeListenerWithSignal(node: ListenerNode_t) {
+export function removeListenerWithSignal(node: ListenerNode.Any) {
     const { signal: signalRef } = node;
     if (signalRef !== null) {
         const signal = signalRef.deref();
@@ -130,7 +129,7 @@ export function removeListenerWithSignal(node: ListenerNode_t) {
     removeListener(node);
 }
 
-function getSentinel(internals: EventTargetInternals_t, listeners: Map<string | symbol, ListenerSentinel_t>, type: string | symbol) {
+function getSentinel(internals: EventTargetInternals, listeners: Map<string | symbol, ListenerSentinel>, type: string | symbol) {
     let sentinel = listeners.get(type);
     if (sentinel === undefined) {
         sentinel = ListenerSentinel.create(null, 0, type, internals, internals.targetRef, 0);
@@ -139,24 +138,24 @@ function getSentinel(internals: EventTargetInternals_t, listeners: Map<string | 
     return sentinel;
 }
 
-function addListener(target: EventTarget, type: string | symbol, listener: Listener<Event>, options: AddEventListenerOptions): ListenerNode_t | null {    
+function addListener(target: EventTarget, type: string | symbol, listener: Listener<Event>, options: AddEventListenerOptions): ListenerNode.Any | null {    
     const { [kInternals]: internals } = target;
     const { listeners } = internals;
 
     const sentinel = getSentinel(internals, listeners, type);
     sentinel.lock++;
     
-    for (let node: ListenerNode_t | null = sentinel.next; node !== null; node = node.next) {
+    for (let node: ListenerNode.Any | null = sentinel.next; node !== null; node = node.next) {
         const listenerRef = (node.weakKey !== null) ? node.listener.deref() : node.listener;
         if (listenerRef === listener) return null;
     }
 
-    let flags = ListenerNode.FLAGS.NONE;
-    if (typeof listener === "function") flags |= ListenerNode.FLAGS.FUNCTION;
+    let flags = ListenerNode.NONE;
+    if (typeof listener === "function") flags |= ListenerNode.FUNCTION;
     const { once = false, weak = false, signal = null } = options;
     
     let listenerRef: Listener<Event> | WeakRef<Listener<Event>> = listener;
-    let key: WeakKey_t | null = null;
+    let key: WeakKey | null = null;
 
     if (weak) {
         listenerRef = new WeakRef(listener);
@@ -190,7 +189,7 @@ function removeEventListener(target: EventTarget, type: string | symbol, listene
     const sentinel = listeners.get(type);
     if (sentinel === undefined) return false;
 
-    for (let node: ListenerNode_t | null = sentinel.next; node !== null; node = node.next) {
+    for (let node: ListenerNode.Any | null = sentinel.next; node !== null; node = node.next) {
         const listenerRef = node.weakKey ? node.listener.deref() : node.listener;
         if (listenerRef === listener) {
             removeListenerWithSignal(node);
@@ -218,7 +217,7 @@ export class EventTarget {
         drain();
         const { flags } = context;
         DispatchContext.free(context);
-        return ((flags & DispatchContext.FLAGS.PREVENT_DEFAULT) === 0);
+        return ((flags & DispatchContext.PREVENT_DEFAULT) === 0);
     }
 
     removeEventListener(type: string | symbol, listener: Listener<Event>): boolean {
@@ -250,11 +249,11 @@ export function getPath(target: EventTarget, out: EventTarget[]) {
     out.push(target);
 }
 
-export function getListeners(target: EventTarget, type: string | symbol, out: ListenerNode_t[]) {
+export function getListeners(target: EventTarget, type: string | symbol, out: ListenerNode.Any[]) {
     const { [kInternals]: { listeners } } = target;
     const sentinel = listeners.get(type);
     if (sentinel !== undefined) {
-        for (let node: ListenerNode_t | null = sentinel.next; node !== null; node = node.next) {
+        for (let node: ListenerNode.Any | null = sentinel.next; node !== null; node = node.next) {
             out.push(node);
         }
     }

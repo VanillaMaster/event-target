@@ -14,10 +14,11 @@
     "type": "module",
     "scripts": {
         "build": "tsc -b",
-        "lint": "eslint"
+        "lint": "biome lint"
     },
     "imports": {
         "#internal/*": {
+            "types": "./src/internal/*",
             "default": "./dist/internal/*"
         }
     },

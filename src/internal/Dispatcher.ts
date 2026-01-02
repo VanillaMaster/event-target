@@ -1,4 +1,3 @@
-import type { ListenerNode_t } from "#internal/ListenerNode.js";
 import type { FunctionListener, ObjectListener } from "#internal/Listener.js"
 import { type EventTarget, getPath, getListeners, removeListenerWithSignal } from "#internal/EventTarget.js";
 import { type Event, kCurrentTarget, kContext, kPhase, kTarget, PHASE } from "#internal/Event.js";
@@ -6,16 +5,14 @@ import { assert, static_cast } from "#internal/utils.js";
 import { push, shift } from "#internal/EventQueue.js";
 import { ErrorEvent } from "#internal/ErrorEvent.js";
 import { LISTENER_ERROR } from "#internal/channels.js";
-import { FLAGS } from "#internal/ListenerNode.js"
-
-import type { DispatchContext_t } from "#internal/DispatchContext.js";
-import * as DispatchContext from "#internal/DispatchContext.js";
+import { ListenerNode } from "#internal/ListenerNode.js"
+import { DispatchContext } from "#internal/DispatchContext.js";
 
 let event: Event | null = null;
 const path: EventTarget[] = [];
-const listeners: ListenerNode_t[] = [];
+const listeners: ListenerNode.Any[] = [];
 
-export function enqueue(target: EventTarget, event: Event, context: DispatchContext_t | null): void {
+export function enqueue(target: EventTarget, event: Event, context: DispatchContext | null): void {
     assert(event[kPhase] === PHASE.NONE);
     event[kContext] = context;
     event[kPhase] = PHASE.ENQUEUED;
@@ -31,7 +28,7 @@ function advance() {
         event[kPhase] = PHASE.DISPATCHING;
         if (event[kContext] === null) {
             const context = DispatchContext.alloc();
-            context.flags |= DispatchContext.FLAGS.INTERNAL;
+            context.flags |= DispatchContext.INTERNAL;
             event[kContext] = context;
         }
 
@@ -40,14 +37,14 @@ function advance() {
     }
 }
 
-function checkStopListeners(context: DispatchContext_t) {
-    const result = (context.flags & DispatchContext.FLAGS.STOP_LISTENERS) !== 0;
+function checkStopListeners(context: DispatchContext) {
+    const result = (context.flags & DispatchContext.STOP_LISTENERS) !== 0;
     if (result) listeners.length = 0;
     return result;
 }
 
-function cehckStopPropagation(context: DispatchContext_t) {
-    const result = (context.flags & DispatchContext.FLAGS.STOP_PROPAGATION) !== 0;
+function cehckStopPropagation(context: DispatchContext) {
+    const result = (context.flags & DispatchContext.STOP_PROPAGATION) !== 0;
     if (result) path.length = 0;
     return result;
 }
@@ -59,7 +56,7 @@ export function drain() {
         assert(context !== null);
         if (listeners.length === 0 || checkStopListeners(context)) {
             if (path.length === 0 || cehckStopPropagation(context)) {                
-                if ((context.flags & DispatchContext.FLAGS.INTERNAL) !== 0) DispatchContext.free(context);
+                if ((context.flags & DispatchContext.INTERNAL) !== 0) DispatchContext.free(context);
                 
                 event[kPhase] = PHASE.NONE;
                 event[kContext] = null;
@@ -88,7 +85,7 @@ export function drain() {
         if (listener !== undefined) {
             if (node.once) removeListenerWithSignal(node);
 
-            if ((node.flags & FLAGS.FUNCTION) !== 0) {
+            if ((node.flags & ListenerNode.FUNCTION) !== 0) {
                 static_cast<FunctionListener<Event>>(listener);
                 try {
                     Reflect.apply(listener, target, [event]);

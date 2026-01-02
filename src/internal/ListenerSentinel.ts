@@ -1,23 +1,41 @@
-import type { ListenerNode_t } from "#internal/ListenerNode.js"
-import type { EventTargetInternals_t } from "#internal/EventTargetInternals.js";
+import type { ListenerNode } from "#internal/ListenerNode.js"
+import type { EventTargetInternals } from "#internal/EventTargetInternals.js";
 import type { EventTarget } from "#internal/EventTarget.js";
 
-export interface ListenerSentinel_t {
-    next: ListenerNode_t | null;
-    length: number;
-    event: string | symbol;
-    internals: EventTargetInternals_t;
-    target: WeakRef<EventTarget>;
-    lock: number;
-}
+export class ListenerSentinel {
 
-export function create(
-    next: ListenerNode_t | null,
-    length: number,
-    event: string | symbol,
-    internals: EventTargetInternals_t,
-    target: WeakRef<EventTarget>,
-    lock: number
-): ListenerSentinel_t {
-    return { next, length, event, internals, target, lock };
+    static create(
+        next: ListenerNode.Any | null,
+        length: number,
+        event: string | symbol,
+        internals: EventTargetInternals,
+        target: WeakRef<EventTarget>,
+        lock: number
+    ): ListenerSentinel {
+        return new ListenerSentinel(next, length, event, internals, target, lock);
+    }
+
+    private constructor(
+        next: ListenerNode.Any | null,
+        length: number,
+        event: string | symbol,
+        internals: EventTargetInternals,
+        target: WeakRef<EventTarget>,
+        lock: number
+    ) {
+        this.next = next;
+        this.length = length;
+        this.event = event;
+        this.internals = internals;
+        this.target = target;
+        this.lock = lock;
+    }
+
+    next: ListenerNode.Any | null;
+    length: number;
+    lock: number;
+    readonly event: string | symbol;
+    readonly internals: EventTargetInternals;
+    readonly target: WeakRef<EventTarget>;
+
 }
