@@ -7,8 +7,7 @@ export {
 
 export {
     type EventOptions,
-    Event,
-    PHASE
+    Event
 } from "#internal/Event.js";
 
 export {

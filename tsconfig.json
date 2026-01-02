@@ -17,8 +17,9 @@
         "noImplicitAny": true,
         "exactOptionalPropertyTypes": true,
         "stripInternal": true,
-        // "verbatimModuleSyntax": true,
+        "verbatimModuleSyntax": true,
         "preserveConstEnums": true,
+        "erasableSyntaxOnly": true,
 
         "skipLibCheck": true,
 

@@ -5,7 +5,7 @@ import type { Listener } from "#internal/Listener.js";
 export const kAborted = Symbol("AbortSignal::aborted");
 export const kReason = Symbol("AbortSignal::reason");
 
-// biome-ignore-start lint: noUnsafeDeclarationMerging
+// biome-ignore-start lint/suspicious/noUnsafeDeclarationMerging: EventTarget methods overload
 
 export class AbortSignal extends EventTarget {
     constructor(aborted: boolean, reason: unknown) {
@@ -37,4 +37,4 @@ export interface AbortSignal {
     removeEventListener(type: string | symbol, listener: Listener<Event>): boolean;
 }
 
-// biome-ignore-end lint: noUnsafeDeclarationMerging
+// biome-ignore-end lint/suspicious/noUnsafeDeclarationMerging: See above

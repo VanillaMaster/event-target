@@ -7,12 +7,6 @@ export const kCurrentTarget = Symbol("Event::currentTarget");
 export const kContext = Symbol("Event::context");
 export const kPhase = Symbol("Event::phase");
 
-export const enum PHASE {
-    NONE,
-    ENQUEUED,
-    DISPATCHING
-}
-
 function stopPropagation(self: Event) {
     const context = self[kContext];
     if (context !== null) context.flags |= DispatchContext.STOP_PROPAGATION;
@@ -36,6 +30,11 @@ export interface EventOptions {
 const OPT_EMPTY: EventOptions = {};
 
 export class Event {
+
+    static readonly NONE        = 0x0;
+    static readonly ENQUEUED    = 0x1;
+    static readonly DISPATCHING = 0x2;
+
     constructor(type: string | symbol, options: EventOptions = OPT_EMPTY) {
         this.type = type;
         this.cancelable = Boolean(options.cancelable);
@@ -44,7 +43,7 @@ export class Event {
 
     readonly type: string | symbol;
     
-    [kPhase]: PHASE = PHASE.NONE;
+    [kPhase]: number = Event.NONE;
     [kContext]: DispatchContext | null = null;
     [kTarget]: EventTarget | null = null;
     [kCurrentTarget]: EventTarget | null = null;

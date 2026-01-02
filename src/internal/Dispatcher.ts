@@ -1,6 +1,6 @@
 import type { FunctionListener, ObjectListener } from "#internal/Listener.js"
 import { type EventTarget, getPath, getListeners, removeListenerWithSignal } from "#internal/EventTarget.js";
-import { type Event, kCurrentTarget, kContext, kPhase, kTarget, PHASE } from "#internal/Event.js";
+import { Event, kCurrentTarget, kContext, kPhase, kTarget } from "#internal/Event.js";
 import { assert, static_cast } from "#internal/utils.js";
 import { push, shift } from "#internal/EventQueue.js";
 import { ErrorEvent } from "#internal/ErrorEvent.js";
@@ -13,9 +13,9 @@ const path: EventTarget[] = [];
 const listeners: ListenerNode.Any[] = [];
 
 export function enqueue(target: EventTarget, event: Event, context: DispatchContext | null): void {
-    assert(event[kPhase] === PHASE.NONE);
+    assert(event[kPhase] === Event.NONE);
     event[kContext] = context;
-    event[kPhase] = PHASE.ENQUEUED;
+    event[kPhase] = Event.ENQUEUED;
     event[kTarget] = target;
     push(event);
 }
@@ -25,7 +25,7 @@ function advance() {
     if (event !== null) {
         const { [kTarget]: target } = event;
         assert(target !== null);
-        event[kPhase] = PHASE.DISPATCHING;
+        event[kPhase] = Event.DISPATCHING;
         if (event[kContext] === null) {
             const context = DispatchContext.alloc();
             context.flags |= DispatchContext.INTERNAL;
@@ -58,7 +58,7 @@ export function drain() {
             if (path.length === 0 || cehckStopPropagation(context)) {                
                 if ((context.flags & DispatchContext.INTERNAL) !== 0) DispatchContext.free(context);
                 
-                event[kPhase] = PHASE.NONE;
+                event[kPhase] = Event.NONE;
                 event[kContext] = null;
                 event[kTarget] = null;
                 event[kCurrentTarget] = null;
