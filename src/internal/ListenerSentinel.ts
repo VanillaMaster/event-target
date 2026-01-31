@@ -1,6 +1,6 @@
-import type { ListenerNode } from "#internal/ListenerNode.js"
-import type { EventTargetInternals } from "#internal/EventTargetInternals.js";
 import type { EventTarget } from "#internal/EventTarget.js";
+import type { EventTargetInternals } from "#internal/EventTargetInternals.js";
+import type { ListenerNode } from "#internal/ListenerNode.js"
 
 export class ListenerSentinel {
 

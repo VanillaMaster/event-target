@@ -1,6 +1,6 @@
 import type { EventTarget } from "#internal/EventTarget.js"; 
-import { type Sentinel, kNext, kPrev } from "#internal/EventQueue.js";
 import { DispatchContext } from "#internal/DispatchContext.js";
+import { kNext, kPrev, type Sentinel } from "#internal/EventQueue.js";
 
 export const kTarget = Symbol("Event::target");
 export const kCurrentTarget = Symbol("Event::currentTarget");

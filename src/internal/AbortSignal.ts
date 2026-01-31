@@ -1,6 +1,6 @@
 import type { Event } from "#internal/Event.js";
-import { type AddEventListenerOptions, EventTarget } from "#internal/EventTarget.js";
 import type { Listener } from "#internal/Listener.js";
+import { type AddEventListenerOptions, EventTarget } from "#internal/EventTarget.js";
 
 export const kAborted = Symbol("AbortSignal::aborted");
 export const kReason = Symbol("AbortSignal::reason");

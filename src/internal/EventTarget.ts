@@ -1,21 +1,15 @@
 import type { AbortSignal } from "#internal/AbortSignal.js";
 import type { Event } from "#internal/Event.js";
 import type { Listener } from "#internal/Listener.js";
-
-import { drain, enqueue } from "#internal/Dispatcher.js";
-import { ListenersChangeEvent } from "#internal/ListenersChangeEvent.js";
 import { LISTENER_ADDED, LISTENER_REMOVED } from "#internal/channels.js";
-import { assert, assertNotNull } from "#internal/utils.js";
-
 import { DispatchContext } from "#internal/DispatchContext.js";
-
-import { ListenerSentinel } from "#internal/ListenerSentinel.js";
-
-import { WeakKey } from "#internal/WeakKey.js";
-
-import { ListenerNode } from "#internal/ListenerNode.js";
-
+import { drain, enqueue } from "#internal/Dispatcher.js";
 import { EventTargetInternals } from "#internal/EventTargetInternals.js";
+import { ListenerNode } from "#internal/ListenerNode.js";
+import { ListenerSentinel } from "#internal/ListenerSentinel.js";
+import { ListenersChangeEvent } from "#internal/ListenersChangeEvent.js";
+import { assert, assertNotNull } from "#internal/utils.js";
+import { WeakKey } from "#internal/WeakKey.js";
 
 export interface AddEventListenerOptions {
     signal?: AbortSignal;

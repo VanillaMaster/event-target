@@ -1,22 +1,21 @@
 import type { Event } from "#internal/Event.js"; 
+import type { FunctionListener, Listener } from "#internal/Listener.js";
 import type { ListenerSentinel } from "#internal/ListenerSentinel.js"
-import type { Listener, FunctionListener } from "#internal/Listener.js";
 import type { WeakKey } from "#internal/WeakKey.js"; 
 import { assert } from "#internal/utils.js";
 
 declare namespace Reference {
 
     const kBrand: unique symbol;
-    const weak: unique symbol;
-    const strong: unique symbol;
 
     interface Weak {
-        [kBrand]: typeof weak; 
+        readonly [kBrand]: "Reference::Weak";
     }
     
     interface Strong {
-        [kBrand]: typeof strong; 
+        readonly [kBrand]: "Reference::Strong";
     }
+
 }
 
 type Reference = Reference.Weak | Reference.Strong;
